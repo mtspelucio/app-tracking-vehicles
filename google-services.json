@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "147117814396",
+    "project_id": "app-trackin",
+    "storage_bucket": "app-trackin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:147117814396:android:1417a51edacc1394920ff9",
+        "android_client_info": {
+          "package_name": "com.apptracking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUM6e4BZ5AGiT2eOvLglt8BaaHDRJH_5I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
