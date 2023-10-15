@@ -2,9 +2,43 @@ import React, { useState } from 'react';
 import { Container, Text, Icon, Title, Form, FakeButton, Button, TextButton, TitleButton, Content } from './styles';
 import Input from '../../components/Input';
 
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { auth, db } from '../../services/firebase.config';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
 export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [dataVehicles, setDataVehicles] = useState([]);
+
+
+    async function userLogin(){
+        await signInWithEmailAndPassword(auth, email, password)
+        .then(userCredentials => {
+
+            const q = query(collection(db, "users"), where("idUser", "==", userCredentials.user.uid));
+
+            const subscribe = onSnapshot(q, (querySnapshot) => {
+                const data = querySnapshot.docs.map(doc => {
+                    return {
+                        id: doc.id,
+                        ...doc.data()
+                    }
+                });
+
+                setDataVehicles(data);
+                navigation.navigate('tab', { 
+                    paramKey: data[0]
+                })
+            });
+
+        })
+        .catch(error => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            alert('Usuario ou senha inválido!');
+        })
+    }
     
     return (
     <Container>
@@ -30,7 +64,9 @@ export default function Login({ navigation }) {
             </FakeButton>
 
             <Button
-                onPress={() => navigation.navigate('map')}
+                // onPress={() => navigation.navigate('registerVehicle')}
+                onPress={userLogin}
+
             >
                 <TitleButton>ENTRAR</TitleButton>
             </Button>

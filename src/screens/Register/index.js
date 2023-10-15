@@ -2,22 +2,56 @@ import React, { useState } from 'react';
 import { BoxAlert, Container, Content, Main, Text, Title, Top } from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import auth from '@react-native-firebase/auth';
-import { Alert } from 'react-native';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, addDoc } from 'firebase/firestore';
+import { auth, db } from '../../services/firebase.config'
 
-
-export default function Register() {
+export default function Register({ navigation }) {
     const [email, setEmail] = useState('');
-    const [name,  setName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword,  setConfirmPassword] = useState('');
 
-    function handleNewAccount() {
-        auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(() => Alert.alert("Conta", "Cadastro realizado"))
-        .catch((erro) => console.log(erro))
+    const [name,  setName] = useState('');
+    const [phone,  setPhone] = useState('');
+    const [address,  setAddress] = useState('');
+
+    async function handleNewAccount() {
+        if(password != confirmPassword) return alert('Digite a mesma senha nos dois campos');
+        if(email == '' || password  == '' || confirmPassword == '' || name  == '' || phone  == '' || address  == '') return alert('Preencha todos os campos');
+
+        const docRef = await createUserWithEmailAndPassword(auth, email, password)
+        .then(async (userCredentials) => {
+
+            const docRefProfile = await addDoc(collection(db, 'users'), {
+                idUser: userCredentials.user.uid,
+                nome: name,
+                telefone: phone,
+                endereco: address,
+                email: email
+              })
+              .then(() => {
+                alert('Usuario registrado com sucesso')
+                navigation.goBack()
+              })
+              .catch(erro =>{
+                console.log(erro)
+                alert('Erro ao registrar informação do usuario, tente novamente mais tarde')
+            })
+    
+            navigation.navigate('tab', { 
+                paramKey: {
+                    id: userCredentials.user.uid,
+                    email: userCredentials.user.email,
+                    name: name
+                } 
+            });
+        })
+        .catch((erro) => {
+            alert('Erro ao cadastrar usuário, tente novamente mais tarde')
+            console.log(erro)
+        });        
     }
+    
 
   return (
     <Container>
@@ -29,17 +63,12 @@ export default function Register() {
 
         <Main>
             <Input 
-                text="Seu e-mail: "
+                text="E-mail: "
                 placeholder="exemplo@hotmail.com"
                 onCgangeText={text => setEmail(text)}
             />
             <Input 
-                text="Seu nome: "
-                placeholder="digite seu primeiro nome"
-                onCgangeText={text => setName(text)}
-            />
-            <Input 
-                text="Sua senha: "
+                text="Senha: "
                 placeholder="digite sua senha"
                 onCgangeText={text => setPassword(text)}
             />
@@ -47,6 +76,22 @@ export default function Register() {
                 text="Confirme a senha: "
                 placeholder="repita sua senha"
                 onCgangeText={text => setConfirmPassword(text)}
+            />
+            <Input 
+                text="Nome: "
+                placeholder="digite seu nome e sobrenome"
+                onCgangeText={text => setName(text)}
+            />
+            <Input 
+                text="Telefone: "
+                placeholder="digite seu telefone"
+                onCgangeText={text => setPhone(text)}
+                keyboardType='numeric'
+            />
+            <Input 
+                text="Endereço: "
+                placeholder="Rua exemplo, 1234"
+                onCgangeText={text => setAddress(text)}
             />
         </Main>
         <BoxAlert>

@@ -18,11 +18,11 @@ export const Main = styled.View`
     width: 90%;
     padding: 0;
     align-items: center;
+    margin-bottom: 30px;
 `;
 export const BoxAlert = styled.View`
     width: 100%;
     padding: 20px 10px;
-    margin-top: 50px;
     background: #08193920;
     align-items: center;
 `;

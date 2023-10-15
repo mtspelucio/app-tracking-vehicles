@@ -1,16 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps'
-import { 
-    requestForegroundPermissionsAsync,
-    getCurrentPositionAsync,
-    watchPositionAsync,
-    LocationAccuracy
-} from 'expo-location';
-import { locationJS } from '../services/location'
+import { requestForegroundPermissionsAsync, getCurrentPositionAsync, watchPositionAsync, LocationAccuracy } from 'expo-location';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '../services/firebase.config';
 
-export default function Map() {
+export default function Map({ userData }) {
     const [location, setLocation] = useState(null);
+    const [dataVehicles, setDataVehicles] = useState([]);
 
     const mapRef = useRef(null);
     async function requestLocationPermissions(){
@@ -25,6 +22,23 @@ export default function Map() {
 
     useEffect(() => {
         requestLocationPermissions();
+    },[])
+
+    useEffect(() => {
+        const q = query(collection(db, "vehicles"), where("idUser", "==", userData.idUser));
+        
+        const subscribe = onSnapshot(q, (querySnapshot) => {
+        const data = querySnapshot.docs.map(doc => {
+            return {
+            id: doc.id,
+            ...doc.data()
+            }
+        });
+        
+        setDataVehicles(data);
+        });
+        
+        return () => subscribe();
     },[])
 
     // useEffect(() => {
@@ -42,7 +56,7 @@ export default function Map() {
     // },[])
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {
                 location &&
                 <MapView
@@ -56,15 +70,13 @@ export default function Map() {
                     }}
                     rotateEnabled={false}
                     scrollEnabled={true}
-                    //zoomEnabled={false}
-                    //minZoomLevel={19}
                     showsPointsOfInterest={false}
                     showsBuildings={false}
                     showsUserLocation={true}
                     loadingEnabled={true}
                 >
                     {
-                        locationJS.veicles.map((element, index) => (
+                        dataVehicles.map((element, index) => (
                             <Marker 
                                 key={index}
                                 coordinate={{
@@ -81,7 +93,7 @@ export default function Map() {
                     }
                 </MapView>
             }
-        </View>
+        </SafeAreaView>
     );
 }
 
