@@ -1,8 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Foundation, FontAwesome5 } from '@expo/vector-icons';
+import { Foundation, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import Home from '../screens/Home';
 import Map from '../screens/Map';
+import Profile from '../screens/Profile';
 
 const Tab = createBottomTabNavigator();
 
@@ -37,6 +38,15 @@ export default function TabRoutes({ route }){
                 }}
             >
                 {(props) => <Map userData={route.params.paramKey} {...props} />}
+            </Tab.Screen>
+            <Tab.Screen 
+                name='profile'
+                options={{
+                    tabBarIcon: ({ color, size}) => <MaterialCommunityIcons name='account' color={color} size={size} />,
+                    tabBarLabel: 'Perfil'
+                }}
+            >
+                {(props) => <Profile userData={route.params.paramKey} {...props} />}
             </Tab.Screen>
         </Tab.Navigator>
     )
