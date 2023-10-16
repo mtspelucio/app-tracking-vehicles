@@ -10,7 +10,7 @@ export default function Home({ navigation, userData }) {
 
   const [dataVehicles, setDataVehicles] = useState([]);
   const [name] = userData.nome.split(' ')
-  
+
   useEffect(() => {
     const q = query(collection(db, "vehicles"), where("idUser", "==", userData.idUser));
 

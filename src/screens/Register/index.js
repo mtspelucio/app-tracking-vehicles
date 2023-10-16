@@ -40,15 +40,17 @@ export default function Register({ navigation }) {
     
             navigation.navigate('tab', { 
                 paramKey: {
-                    id: userCredentials.user.uid,
+                    idUser: userCredentials.user.uid,
                     email: userCredentials.user.email,
-                    name: name
+                    nome: name,
+                    telefone: phone,
+                    endereco: address,
                 } 
             });
         })
         .catch((erro) => {
             alert('Erro ao cadastrar usuário, tente novamente mais tarde')
-            console.log(erro)
+            console.log(erro.message)
         });        
     }
     

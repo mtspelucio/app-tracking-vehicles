@@ -15,3 +15,7 @@ export const Form = styled.View`
 export const Text = styled.Text`
   font-size: 15px;
 `;
+export const Title = styled.Text`
+  font-size: 20px;
+  font-weight: bold;
+`;

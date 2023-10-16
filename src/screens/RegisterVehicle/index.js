@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Content, Form, Text } from './styles';
+import { Container, Content, Form, Text, Title } from './styles';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../services/firebase.config';
 import Input from '../../components/Input';
@@ -19,7 +19,7 @@ export default function RegisterVehicle({ navigation, route }) {
     }
     
     const docRef = await addDoc(collection(db, 'vehicles'), {
-      idUser: route.params.paramKey.id,
+      idUser: route.params.paramKey.idUser,
       placa: plate,
       marca: brand,
       modelo: model,
@@ -43,7 +43,7 @@ export default function RegisterVehicle({ navigation, route }) {
   return (
     <Container>
       <Content contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
-        <Text>Cadastro da Moto</Text>
+        <Title>Cadastro da Moto</Title>
         <Form>
           <Input 
             text="Placa: "
